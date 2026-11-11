@@ -14,7 +14,7 @@
 </head>
 <body>
   <header class="topbar">
-    <h1>🔍 MetaScrub</h1>
+    <h1> MetaScrub</h1>
     <span class="spacer"></span>
     <span class="pill" title="This page has a Content-Security-Policy that blocks all network requests.">🔒 Offline · nothing uploaded</span>
   </header>
@@ -22,7 +22,7 @@
   <main class="wrap">
     <section id="drop" class="drop" tabindex="0" role="button" aria-label="Choose files to inspect">
       <div class="drop-inner">
-        <div class="drop-icon">🖼️</div>
+        <div class="drop-icon"></div>
         <h2>Drop files here</h2>
         <p class="muted">or <span class="link">choose files</span>. Photos (JPEG, iPhone HEIC, PNG, WebP), videos (MOV, MP4), PDF, Word, Excel and PowerPoint.</p>
         <p class="muted small">Your files are read locally by this page and never uploaded.</p>
@@ -71,7 +71,7 @@
         <div id="notes"></div>
 
         <div id="gps-card" class="panel card hidden">
-          <h3 id="gps-title">📍 This photo reveals where it was taken</h3>
+          <h3 id="gps-title"> This photo reveals where it was taken</h3>
           <div class="gps-grid">
             <div class="coords mono" id="gps-coords"></div>
             <div class="mini-map" id="mini-map" aria-hidden="true"></div>
@@ -85,7 +85,6 @@
         </div>
 
         <div id="thumb-card" class="panel card hidden">
-          <h3>🖼️ Hidden thumbnail</h3>
           <p class="muted small" id="thumb-note">Cameras embed a small preview inside the file. Editors often don't update it, so it can show the photo <em>before</em> cropping or blurring.</p>
           <img id="thumb" alt="Embedded thumbnail" />
         </div>
@@ -107,12 +106,12 @@
     <section class="explain">
       <h2>What is photo metadata?</h2>
       <div class="explain-grid">
-        <div><h3>📍 Location</h3><p class="muted">Phones write GPS coordinates into every photo by default. Posting the original file can reveal your home.</p></div>
-        <div><h3>🪪 Identity</h3><p class="muted">Serial numbers and unique IDs can link photos taken by the same device, even across accounts.</p></div>
-        <div><h3>🕒 Time</h3><p class="muted">Capture times down to the sub-second, often with your time zone offset.</p></div>
-        <div><h3>👻 Hidden data</h3><p class="muted">Thumbnails, depth maps and bytes after the image end can hold content you thought you removed.</p></div>
-        <div><h3>🎬 Videos</h3><p class="muted">Phone videos store GPS, the phone model and the exact recording time, just like photos.</p></div>
-        <div><h3>📄 Documents</h3><p class="muted">Word, Excel, PowerPoint and PDF files carry author names, your company, comment authors, editing time and even photos with GPS.</p></div>
+        <div><h3> Location</h3><p class="muted">Phones write GPS coordinates into every photo by default. Posting the original file can reveal your home.</p></div>
+        <div><h3> Identity</h3><p class="muted">Serial numbers and unique IDs can link photos taken by the same device, even across accounts.</p></div>
+        <div><h3> Time</h3><p class="muted">Capture times down to the sub-second, often with your time zone offset.</p></div>
+        <div><h3> Hidden data</h3><p class="muted">Thumbnails, depth maps and bytes after the image end can hold content you thought you removed.</p></div>
+        <div><h3> Videos</h3><p class="muted">Phone videos store GPS, the phone model and the exact recording time, just like photos.</p></div>
+        <div><h3> Documents</h3><p class="muted">Word, Excel, PowerPoint and PDF files carry author names, your company, comment authors, editing time and even photos with GPS.</p></div>
       </div>
       <p class="muted small">Cleaning is lossless: metadata is cut out or blanked in place, and pictures, video and document content are never re-compressed. Many social sites strip metadata on upload, but email, cloud links, messaging "send as file" and forums often don't.</p>
     </section>
