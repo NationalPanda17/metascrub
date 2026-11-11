@@ -9,11 +9,10 @@
 }
 .drop:hover, .drop:focus-visible, .drop.over { border-color: var(--accent); background: rgba(94,234,212,.07); }
 .drop.over { transform: scale(1.01); }
-.drop-icon { font-size: 44px; }
 .drop h2 { margin: 8px 0 4px; font-size: 24px; }
 .drop p { margin: 4px 0; }
 .drop.compact { padding: 14px; border-radius: 14px; }
-.drop.compact .drop-icon, .drop.compact .small { display: none; }
+.drop.compact .small { display: none; }
 .drop.compact h2 { font-size: 16px; display: inline; margin-right: 6px; }
 .drop.compact p { display: inline; }
 
@@ -77,7 +76,7 @@ td { padding: 7px 8px; border-top: 1px solid var(--line); vertical-align: top; }
 td.k { width: 38%; color: var(--muted); white-space: nowrap; }
 td.v { font-family: var(--mono); font-size: 13px; word-break: break-word; }
 tr:target td { background: rgba(94,234,212,.08); }
-.tag { display: inline-block; width: 22px; text-align: center; border-radius: 6px; }
+.tag { display: inline-block; padding: 1px 4px; text-align: center; border-radius: 6px; font-size: 10px; font-weight: 700; }
 .tag.high { background: rgba(248,113,113,.15); }
 .tag.med { background: rgba(251,191,36,.12); }
 .tag.low { background: rgba(96,165,250,.1); }
@@ -95,17 +94,18 @@ tr:target td { background: rgba(94,234,212,.08); }
 
 .tiny { font-size: 12px; margin: 0; }
 #vpreview { max-width: 100%; max-height: 260px; display: block; border-radius: 8px; }
-.doc-tile { font-size: 56px; text-align: center; line-height: 1.1; }
+.doc-tile { text-align: center; line-height: 1.1; }
+.doc-tile-kind { display: block; color: var(--accent); font-size: 32px; font-weight: 700; letter-spacing: .03em; }
 .doc-tile small { display: block; font-size: 13px; color: var(--muted); margin-top: 6px; }
 
 /* what a stranger could learn */
 .stranger h3 { display: flex; align-items: center; gap: 8px; }
 .learn { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.learn li { display: grid; grid-template-columns: 26px 1fr; gap: 6px; font-size: 15px; line-height: 1.4; padding: 8px 10px; border-radius: 10px; background: var(--panel-2); border-left: 3px solid var(--line); }
+.learn li { display: grid; grid-template-columns: minmax(70px, auto) 1fr; gap: 8px; font-size: 15px; line-height: 1.4; padding: 8px 10px; border-radius: 10px; background: var(--panel-2); border-left: 3px solid var(--line); }
 .learn li.high { border-left-color: var(--high); }
 .learn li.med { border-left-color: var(--med); }
 .learn li.low { border-left-color: var(--low); }
-.learn .ico { font-size: 18px; }
+.learn .label { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 .learn.clean li { border-left-color: var(--ok); }
 
 /* before / after */

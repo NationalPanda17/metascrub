@@ -788,12 +788,12 @@ export function classify(name) {
   return 'technical';
 }
 export const CATEGORY_INFO = {
-  location: { label: 'Location', risk: 'high', icon: '📍', why: 'Where the photo was taken, often accurate to a few meters.' },
-  identity: { label: 'Identity', risk: 'high', icon: '🪪', why: 'Names, serial numbers and unique IDs that can link files back to you or your device.' },
-  device: { label: 'Device & software', risk: 'med', icon: '📱', why: 'Your camera or phone model and the apps used to edit.' },
-  time: { label: 'Timestamps', risk: 'med', icon: '🕒', why: 'Exact capture and edit times, sometimes with your time zone.' },
-  content: { label: 'Text & history', risk: 'med', icon: '📝', why: 'Captions, comments, keywords and edit history.' },
-  technical: { label: 'Technical', risk: 'low', icon: '⚙️', why: 'Exposure, resolution and encoding details. Usually harmless.' },
+  location: { label: 'Location', tag: 'GPS', risk: 'high', why: 'Where the photo was taken, often accurate to a few meters.' },
+  identity: { label: 'Identity', tag: 'ID', risk: 'high', why: 'Names, serial numbers and unique IDs that can link files back to you or your device.' },
+  device: { label: 'Device & software', tag: 'Device', risk: 'med', why: 'Your camera or phone model and the apps used to edit.' },
+  time: { label: 'Timestamps', tag: 'Time', risk: 'med', why: 'Exact capture and edit times, sometimes with your time zone.' },
+  content: { label: 'Text & history', tag: 'Text', risk: 'med', why: 'Captions, comments, keywords and edit history.' },
+  technical: { label: 'Technical', tag: 'Tech', risk: 'low', why: 'Exposure, resolution and encoding details. Usually harmless.' },
 };
 
 // ---------------------------------------------------------------- entry point

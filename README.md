@@ -8,11 +8,11 @@ MetaScrub reads the hidden metadata in a file, explains it in plain English ("Ta
 
 | Type | Reads | Cleans |
 |---|---|---|
-| Photos: JPEG, PNG, WebP | EXIF, GPS, XMP, IPTC, comments, embedded thumbnails, data hidden after the image | ✅ lossless |
-| iPhone HEIC / HEIF / AVIF | EXIF, GPS, XMP, thumbnail, depth & portrait layers | ✅ in place |
-| Videos: iPhone MOV, Android MP4 | GPS, phone model, software, recording dates | ✅ in place |
-| Word, Excel, PowerPoint | Author, last editor, company, manager, template path, editing time, comment & tracked-change authors, photos inside (with their GPS) | ✅ |
-| PDF | Author, title, dates, producer, XMP, every saved revision | ✅ in place |
+| Photos: JPEG, PNG, WebP | EXIF, GPS, XMP, IPTC, comments, embedded thumbnails, data hidden after the image | Lossless |
+| iPhone HEIC / HEIF / AVIF | EXIF, GPS, XMP, thumbnail, depth & portrait layers | In place |
+| Videos: iPhone MOV, Android MP4 | GPS, phone model, software, recording dates | In place |
+| Word, Excel, PowerPoint | Author, last editor, company, manager, template path, editing time, comment & tracked-change authors, photos inside (with their GPS) | Supported |
+| PDF | Author, title, dates, producer, XMP, every saved revision | In place |
 | TIFF | EXIF, GPS | view only |
 
 Features:

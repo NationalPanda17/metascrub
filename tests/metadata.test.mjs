@@ -9,13 +9,14 @@ const dir = new URL('./fixtures/', import.meta.url).pathname;
 if (!fs.existsSync(dir + 'test.jpg')) execFileSync('python3', [new URL('./make_fixtures.py', import.meta.url).pathname, dir], { stdio: 'inherit' });
 
 let failed = 0;
-const ok = (cond, msg) => { console.log(`${cond ? '✓' : '✗'} ${msg}`); if (!cond) failed++; };
+const ok = (cond, msg) => { console.log(`${cond ? 'PASS' : 'FAIL'} ${msg}`); if (!cond) failed++; };
 
 for (const f of ['test.jpg', 'test.png', 'test.webp']) {
   const b = new Uint8Array(fs.readFileSync(dir + f));
   const r = await analyze(b);
   ok(r.gps && Math.abs(r.gps.lat - 38.804833) < 1e-4 && r.gps.lon < 0, `${f}: GPS decoded (${r.gps?.lat}, ${r.gps?.lon})`);
   ok(r.counts.identity >= 2, `${f}: identity fields found (artist, serial)`);
+  if (f === 'test.jpg') ok(strangerSummary(r).every((s) => typeof s.label === 'string'), `${f}: summary findings have text labels`);
   if (f === 'test.jpg') ok(r.hiddenBytes > 0, `${f}: trailing hidden data detected`);
   const clean = await strip(b, r.format, { keepOrientation: true, keepICC: true });
   const r2 = await analyze(clean);

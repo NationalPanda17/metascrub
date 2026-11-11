@@ -21,7 +21,7 @@ function toast(msg, ms = 3500) {
   setTimeout(() => t.remove(), ms);
 }
 const fmtBytes = (n) => (n < 1024 ? `${n} B` : n < 1048576 ? `${(n / 1024).toFixed(1)} KB` : `${(n / 1048576).toFixed(2)} MB`);
-const DOC = { docx: ['📄', 'Word document'], xlsx: ['📊', 'Excel workbook'], pptx: ['📽️', 'PowerPoint deck'], pdf: ['📕', 'PDF document'], zip: ['🗜️', 'ZIP archive'] };
+const DOC = { docx: ['DOCX', 'Word document'], xlsx: ['XLSX', 'Excel workbook'], pptx: ['PPTX', 'PowerPoint deck'], pdf: ['PDF', 'PDF document'], zip: ['ZIP', 'ZIP archive'] };
 const MIME = { jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', heif: 'image/heic', avif: 'image/avif', isobmff: 'image/heif', pdf: 'application/pdf', mov: 'video/quicktime', mp4: 'video/mp4',
   docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' };
 
@@ -70,7 +70,7 @@ function renderList() {
   $('file-list').replaceChildren(...state.items.map((it, i) => h('li', { class: i === state.selected ? 'sel' : '', onclick: () => select(i) },
     h('span', { class: `dot ${riskLevel(it)}` }),
     h('span', { class: 'fname' }, it.file.name),
-    h('span', { class: 'muted small' }, it.clean?.ok ? '✓' : it.report.total ? `${it.report.total}` : '✓'))));
+    h('span', { class: 'muted small' }, it.clean?.ok ? 'Clean' : it.report.total ? `${it.report.total}` : 'OK'))));
 }
 function renderBatchNote() {
   const n = state.items.filter((it) => it.report.strip === 'lossless').length, skip = state.items.length - n;
@@ -109,8 +109,8 @@ function select(i) {
   else if (DOC[r.format]) showTile();
   else { img.classList.remove('hidden'); img.onerror = () => { img.classList.add('hidden'); showTile(); }; img.src = it.url; }
   function showTile() {
-    const [icon, label] = DOC[r.format] || (r.isVideo ? ['🎬', 'Video'] : ['🖼️', r.format === 'heif' ? 'HEIC photo (preview needs Safari)' : 'No preview']);
-    none.replaceChildren(h('div', { class: 'doc-tile' }, icon, h('small', {}, label)));
+    const [kind, label] = DOC[r.format] || (r.isVideo ? ['VIDEO', 'Video'] : ['IMAGE', r.format === 'heif' ? 'HEIC photo (preview needs Safari)' : 'No preview']);
+    none.replaceChildren(h('div', { class: 'doc-tile' }, h('span', { class: 'doc-tile-kind' }, kind), h('small', {}, label)));
     none.classList.remove('hidden');
   }
 
@@ -122,14 +122,14 @@ function select(i) {
 
   const lvl = riskLevel(it), verdict = $('verdict');
   verdict.className = `verdict ${lvl}`;
-  verdict.textContent = lvl === 'high' ? `⚠️ This file gives away personal details (${r.total} metadata fields).`
+  verdict.textContent = lvl === 'high' ? `This file gives away personal details (${r.total} metadata fields).`
     : lvl === 'med' ? `This file has ${r.total} metadata fields, mostly device or time details.`
-    : r.total ? `Only technical metadata found (${r.total} fields).` : '✓ No metadata found in this file.';
+    : r.total ? `Only technical metadata found (${r.total} fields).` : 'No metadata found in this file.';
 
   const chips = Object.entries(CATEGORY_INFO).filter(([k]) => r.counts?.[k]).map(([k, c]) =>
-    h('a', { class: `chip ${c.risk}`, href: `#cat-${k}`, title: c.why }, `${c.icon} ${c.label} `, h('b', {}, r.counts[k])));
-  if (r.thumbnail) chips.push(h('a', { class: 'chip high', href: '#thumb-card' }, '🖼️ Hidden thumbnail'));
-  if (r.hiddenBytes) chips.push(h('span', { class: 'chip high' }, `👻 ${fmtBytes(r.hiddenBytes)} hidden data`));
+    h('a', { class: `chip ${c.risk}`, href: `#cat-${k}`, title: c.why }, `${c.label} `, h('b', {}, r.counts[k])));
+  if (r.thumbnail) chips.push(h('a', { class: 'chip high', href: '#thumb-card' }, 'Hidden thumbnail'));
+  if (r.hiddenBytes) chips.push(h('span', { class: 'chip high' }, `${fmtBytes(r.hiddenBytes)} hidden data`));
   $('chips').replaceChildren(...chips);
 
   const lossless = r.strip === 'lossless';
@@ -146,7 +146,7 @@ function select(i) {
   const gpsCard = $('gps-card');
   if (r.gps) {
     gpsCard.classList.remove('hidden');
-    $('gps-title').textContent = DOC[r.format] ? '📍 A photo inside reveals where it was taken' : r.isVideo ? '📍 This video reveals where it was recorded' : '📍 This photo reveals where it was taken';
+    $('gps-title').textContent = DOC[r.format] ? 'A photo inside reveals where it was taken' : r.isVideo ? 'This video reveals where it was recorded' : 'This photo reveals where it was taken';
     const { lat, lon, alt } = r.gps;
     $('gps-coords').replaceChildren(
       h('div', {}, h('span', { class: 'muted' }, 'Latitude  '), `${lat}`),
@@ -169,7 +169,7 @@ function select(i) {
     const rows = g.entries.map((e) => {
       const info = CATEGORY_INFO[e.category] || CATEGORY_INFO.technical;
       const anchor = !seenCat.has(e.category) ? (seenCat.add(e.category), `cat-${e.category}`) : null;
-      return h('tr', { id: anchor }, h('td', { class: 'k' }, h('span', { class: `tag ${info.risk}`, title: info.label }, info.icon), ' ', e.name), h('td', { class: 'v' }, String(e.value)));
+      return h('tr', { id: anchor }, h('td', { class: 'k' }, h('span', { class: `tag ${info.risk}`, title: info.label }, info.tag), ' ', e.name), h('td', { class: 'v' }, String(e.value)));
     });
     return h('details', { class: 'panel card group', open: '' }, h('summary', {}, g.name, h('span', { class: 'muted small' }, `  ${g.entries.length} fields`)),
       h('div', { class: 'table-wrap' }, h('table', {}, h('tbody', {}, rows))));
@@ -183,9 +183,9 @@ function select(i) {
 }
 
 function renderStranger(list, el, title, clean = false) {
-  el.replaceChildren(h('h3', {}, '🕵️ ', title),
-    list.length ? h('ul', { class: `learn${clean ? ' clean' : ''}` }, ...list.map((s) => h('li', { class: s.level }, h('span', { class: 'ico' }, s.icon), h('span', {}, s.text))))
-      : h('p', { class: 'muted' }, clean ? 'Nothing personal: just the content itself. ✓' : 'Nothing personal. This file looks clean. ✓'));
+  el.replaceChildren(h('h3', {}, title),
+    list.length ? h('ul', { class: `learn${clean ? ' clean' : ''}` }, ...list.map((s) => h('li', { class: s.level }, h('span', { class: 'label' }, s.label), h('span', {}, s.text))))
+      : h('p', { class: 'muted' }, clean ? 'Nothing personal: just the content itself.' : 'Nothing personal. This file looks clean.'));
 }
 
 // before / after
@@ -193,21 +193,21 @@ async function renderCompare(it) {
   const box = $('compare');
   if (it.report.strip !== 'lossless') { box.classList.add('hidden'); return; }
   box.classList.remove('hidden');
-  box.replaceChildren(h('h3', {}, '🔍 Before → after cleaning'), h('p', { class: 'muted' }, 'Working out what will change…'));
+  box.replaceChildren(h('h3', {}, 'Before → after cleaning'), h('p', { class: 'muted' }, 'Working out what will change…'));
   const c = await cleanItem(it).catch((e) => ({ error: e }));
   if (state.items[state.selected] !== it) return;
-  if (c.error) { box.replaceChildren(h('h3', {}, '🔍 Before → after cleaning'), h('div', { class: 'note high' }, `Could not clean this file: ${c.error.message}`)); return; }
+  if (c.error) { box.replaceChildren(h('h3', {}, 'Before → after cleaning'), h('div', { class: 'note high' }, `Could not clean this file: ${c.error.message}`)); return; }
   const byCat = {};
   for (const e of c.removed) (byCat[e.category] ||= []).push(e);
   const order = ['location', 'identity', 'device', 'time', 'content', 'technical'];
   box.replaceChildren(
-    h('h3', {}, '🔍 Before → after cleaning'),
+    h('h3', {}, 'Before → after cleaning'),
     h('div', { class: 'cols' },
       h('div', { class: 'side' }, h('span', { class: 'muted small' }, 'Before'), h('b', {}, `${it.report.total} fields`), h('span', { class: 'muted small' }, fmtBytes(it.bytes.length))),
       h('div', { class: 'arrow' }, '→'),
       h('div', { class: 'side after' }, h('span', { class: 'muted small' }, 'After'), h('b', {}, `${c.kept.length} field${c.kept.length === 1 ? '' : 's'}`), h('span', { class: 'muted small' }, `${fmtBytes(c.bytes.length)}${c.bytes.length === it.bytes.length ? ' (same size, blanked in place)' : ''}`))),
     c.removed.length ? h('p', { class: 'small' }, h('b', {}, `Removed (${c.removed.length})`)) : '',
-    ...order.filter((k) => byCat[k]).map((k) => h('div', { class: 'removed', title: CATEGORY_INFO[k].label }, ...byCat[k].slice(0, 30).map((e) => h('span', {}, `${CATEGORY_INFO[k].icon} ${e.name}: ${String(e.value).slice(0, 40)}`)))),
+    ...order.filter((k) => byCat[k]).map((k) => h('div', { class: 'removed', title: CATEGORY_INFO[k].label }, ...byCat[k].slice(0, 30).map((e) => h('span', {}, `${e.name}: ${String(e.value).slice(0, 40)}`)))),
     c.kept.length ? h('p', { class: 'small' }, h('b', {}, 'Kept on purpose'), h('span', { class: 'muted' }, ' (harmless, or needed to display correctly)')) : '',
     c.kept.length ? h('div', { class: 'kept' }, ...c.kept.map((e) => h('span', {}, `${e.name}: ${String(e.value).slice(0, 40)}`))) : '',
     (() => { const d = h('div'); renderStranger(c.summary, d, 'After cleaning, a stranger could learn', true); return d; })(),
@@ -245,8 +245,8 @@ $('dl-clean').addEventListener('click', async () => {
     if (!c.ok) throw new Error('Verification failed, so the file was not saved');
     download(new Blob([c.bytes], { type: MIME[it.report.format] || 'application/octet-stream' }), cleanName(it.file.name));
     const saved = it.bytes.length - c.bytes.length;
-    toast(`✓ Verified clean · ${c.removed.length} fields removed${saved > 0 ? ` · ${fmtBytes(saved)} smaller` : ''}`);
-  } catch (e) { toast(`✗ ${e.message}`); }
+    toast(`Verified clean · ${c.removed.length} fields removed${saved > 0 ? ` · ${fmtBytes(saved)} smaller` : ''}`);
+  } catch (e) { toast(`Error: ${e.message}`); }
 });
 
 $('dl-reencode').addEventListener('click', async () => {
@@ -258,8 +258,8 @@ $('dl-reencode').addEventListener('click', async () => {
     const type = /png|gif/.test(it.report.format) ? 'image/png' : 'image/jpeg';
     const blob = await new Promise((res) => c.toBlob(res, type, 0.95));
     download(blob, cleanName(it.file.name, type === 'image/png' ? 'png' : 'jpg'));
-    toast('✓ Re-encoded copy saved (all metadata removed)');
-  } catch { toast('✗ Your browser cannot open this image format'); }
+    toast('Re-encoded copy saved (all metadata removed)');
+  } catch { toast('Your browser cannot open this image format'); }
 });
 
 $('dl-report').addEventListener('click', () => {
@@ -295,7 +295,7 @@ $('strip-all').addEventListener('click', async () => {
     if (files.length === 1) { const f = files[0]; download(new Blob([f.data]), f.name); }
     else download(new Blob([await writeZip(files)], { type: 'application/zip' }), 'metascrub-clean.zip');
     renderList();
-    toast(`✓ ${files.length} verified clean file${files.length === 1 ? '' : 's'}${files.length > 1 ? ' in one zip' : ''}${skipped.length ? ` · ${skipped.length} skipped (inspect only)` : ''}`, 5000);
+    toast(`${files.length} verified clean file${files.length === 1 ? '' : 's'}${files.length > 1 ? ' in one zip' : ''}${skipped.length ? ` · ${skipped.length} skipped (inspect only)` : ''}`, 5000);
   } finally { btn.disabled = false; btn.textContent = 'Clean all → one .zip'; }
 });
 

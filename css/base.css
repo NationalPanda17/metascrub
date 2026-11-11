@@ -40,6 +40,7 @@ button, select, input { font: inherit; color: inherit; }
 .topbar .home { text-decoration: none; color: var(--muted); font-size: 14px; }
 .topbar .home:hover { color: var(--text); }
 .topbar h1 { font-size: 17px; margin: 0; font-weight: 650; letter-spacing: .2px; }
+.brand-mark { width: 18px; height: 18px; vertical-align: -3px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; }
 .topbar .spacer { flex: 1; }
 .pill {
   font-size: 12px; padding: 3px 10px; border-radius: 999px;
