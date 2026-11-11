@@ -21,7 +21,7 @@ function toast(msg, ms = 3500) {
   setTimeout(() => t.remove(), ms);
 }
 const fmtBytes = (n) => (n < 1024 ? `${n} B` : n < 1048576 ? `${(n / 1024).toFixed(1)} KB` : `${(n / 1048576).toFixed(2)} MB`);
-const DOC = { docx: ['📄', 'Word document'], xlsx: ['📊', 'Excel workbook'], pptx: ['📽️', 'PowerPoint deck'], pdf: ['📕', 'PDF document'], zip: ['🗜️', 'ZIP archive'] };
+const DOC = { docx: [ 'Word document'], xlsx: [, 'Excel workbook'], pptx: ['PowerPoint deck'], pdf: [ 'PDF document'], zip: [ 'ZIP archive'] };
 const MIME = { jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', heif: 'image/heic', avif: 'image/avif', isobmff: 'image/heif', pdf: 'application/pdf', mov: 'video/quicktime', mp4: 'video/mp4',
   docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' };
 
@@ -109,7 +109,7 @@ function select(i) {
   else if (DOC[r.format]) showTile();
   else { img.classList.remove('hidden'); img.onerror = () => { img.classList.add('hidden'); showTile(); }; img.src = it.url; }
   function showTile() {
-    const [icon, label] = DOC[r.format] || (r.isVideo ? ['🎬', 'Video'] : ['🖼️', r.format === 'heif' ? 'HEIC photo (preview needs Safari)' : 'No preview']);
+    const [icon, label] = DOC[r.format] || (r.isVideo ? [ 'Video'] : [ r.format === 'heif' ? 'HEIC photo (preview needs Safari)' : 'No preview']);
     none.replaceChildren(h('div', { class: 'doc-tile' }, icon, h('small', {}, label)));
     none.classList.remove('hidden');
   }
@@ -122,14 +122,14 @@ function select(i) {
 
   const lvl = riskLevel(it), verdict = $('verdict');
   verdict.className = `verdict ${lvl}`;
-  verdict.textContent = lvl === 'high' ? `⚠️ This file gives away personal details (${r.total} metadata fields).`
+  verdict.textContent = lvl === 'high' ? ` This file gives away personal details (${r.total} metadata fields).`
     : lvl === 'med' ? `This file has ${r.total} metadata fields, mostly device or time details.`
     : r.total ? `Only technical metadata found (${r.total} fields).` : '✓ No metadata found in this file.';
 
   const chips = Object.entries(CATEGORY_INFO).filter(([k]) => r.counts?.[k]).map(([k, c]) =>
     h('a', { class: `chip ${c.risk}`, href: `#cat-${k}`, title: c.why }, `${c.icon} ${c.label} `, h('b', {}, r.counts[k])));
-  if (r.thumbnail) chips.push(h('a', { class: 'chip high', href: '#thumb-card' }, '🖼️ Hidden thumbnail'));
-  if (r.hiddenBytes) chips.push(h('span', { class: 'chip high' }, `👻 ${fmtBytes(r.hiddenBytes)} hidden data`));
+  if (r.thumbnail) chips.push(h('a', { class: 'chip high', href: '#thumb-card' }, ' Hidden thumbnail'));
+  if (r.hiddenBytes) chips.push(h('span', { class: 'chip high' }, ` ${fmtBytes(r.hiddenBytes)} hidden data`));
   $('chips').replaceChildren(...chips);
 
   const lossless = r.strip === 'lossless';
@@ -146,7 +146,7 @@ function select(i) {
   const gpsCard = $('gps-card');
   if (r.gps) {
     gpsCard.classList.remove('hidden');
-    $('gps-title').textContent = DOC[r.format] ? '📍 A photo inside reveals where it was taken' : r.isVideo ? '📍 This video reveals where it was recorded' : '📍 This photo reveals where it was taken';
+    $('gps-title').textContent = DOC[r.format] ? ' A photo inside reveals where it was taken' : r.isVideo ? ' This video reveals where it was recorded' : ' This photo reveals where it was taken';
     const { lat, lon, alt } = r.gps;
     $('gps-coords').replaceChildren(
       h('div', {}, h('span', { class: 'muted' }, 'Latitude  '), `${lat}`),
@@ -183,7 +183,7 @@ function select(i) {
 }
 
 function renderStranger(list, el, title, clean = false) {
-  el.replaceChildren(h('h3', {}, '🕵️ ', title),
+  el.replaceChildren(h('h3', {}, ' ', title),
     list.length ? h('ul', { class: `learn${clean ? ' clean' : ''}` }, ...list.map((s) => h('li', { class: s.level }, h('span', { class: 'ico' }, s.icon), h('span', {}, s.text))))
       : h('p', { class: 'muted' }, clean ? 'Nothing personal: just the content itself. ✓' : 'Nothing personal. This file looks clean. ✓'));
 }
@@ -193,15 +193,15 @@ async function renderCompare(it) {
   const box = $('compare');
   if (it.report.strip !== 'lossless') { box.classList.add('hidden'); return; }
   box.classList.remove('hidden');
-  box.replaceChildren(h('h3', {}, '🔍 Before → after cleaning'), h('p', { class: 'muted' }, 'Working out what will change…'));
+  box.replaceChildren(h('h3', {}, ' Before → after cleaning'), h('p', { class: 'muted' }, 'Working out what will change…'));
   const c = await cleanItem(it).catch((e) => ({ error: e }));
   if (state.items[state.selected] !== it) return;
-  if (c.error) { box.replaceChildren(h('h3', {}, '🔍 Before → after cleaning'), h('div', { class: 'note high' }, `Could not clean this file: ${c.error.message}`)); return; }
+  if (c.error) { box.replaceChildren(h('h3', {}, ' Before → after cleaning'), h('div', { class: 'note high' }, `Could not clean this file: ${c.error.message}`)); return; }
   const byCat = {};
   for (const e of c.removed) (byCat[e.category] ||= []).push(e);
   const order = ['location', 'identity', 'device', 'time', 'content', 'technical'];
   box.replaceChildren(
-    h('h3', {}, '🔍 Before → after cleaning'),
+    h('h3', {}, ' Before → after cleaning'),
     h('div', { class: 'cols' },
       h('div', { class: 'side' }, h('span', { class: 'muted small' }, 'Before'), h('b', {}, `${it.report.total} fields`), h('span', { class: 'muted small' }, fmtBytes(it.bytes.length))),
       h('div', { class: 'arrow' }, '→'),
