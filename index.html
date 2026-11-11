@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MetaScrub · See and strip hidden metadata from photos, videos and documents</title>
+  <meta property="og:title" content="MetaScrub: see and remove hidden metadata" />
+  <meta name="description" content="See what your photos, videos and documents reveal (GPS location, device, names, edit history) and strip it, 100% in your browser. Nothing is uploaded." />
+  <!-- Strict CSP: no network requests at all. Files never leave the page. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' blob: data:; media-src 'self' blob:; style-src 'self'; script-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>🔍 MetaScrub</h1>
+    <span class="spacer"></span>
+    <span class="pill" title="This page has a Content-Security-Policy that blocks all network requests.">🔒 Offline · nothing uploaded</span>
+  </header>
+
+  <main class="wrap">
+    <section id="drop" class="drop" tabindex="0" role="button" aria-label="Choose files to inspect">
+      <div class="drop-inner">
+        <div class="drop-icon">🖼️</div>
+        <h2>Drop files here</h2>
+        <p class="muted">or <span class="link">choose files</span>. Photos (JPEG, iPhone HEIC, PNG, WebP), videos (MOV, MP4), PDF, Word, Excel and PowerPoint.</p>
+        <p class="muted small">Your files are read locally by this page and never uploaded.</p>
+      </div>
+      <input id="file" type="file" multiple accept="image/*,video/*,.pdf,.heic,.heif,.tif,.tiff,.mov,.mp4,.m4v,.3gp,.docx,.xlsx,.pptx" hidden />
+    </section>
+
+    <section id="workspace" class="workspace hidden">
+      <aside class="files panel">
+        <div class="files-head">
+          <strong>Files</strong>
+          <button id="add-more" class="btn small">+ Add</button>
+        </div>
+        <ul id="file-list"></ul>
+        <div class="batch">
+          <label class="check"><input type="checkbox" id="opt-orient" checked /> Keep rotation</label>
+          <label class="check"><input type="checkbox" id="opt-icc" checked /> Keep color profile</label>
+          <label class="check"><input type="checkbox" id="opt-anon" checked /> Anonymize comment authors</label>
+          <button id="strip-all" class="btn primary">Clean all → one .zip</button>
+          <p class="muted tiny" id="batch-note"></p>
+          <button id="clear-all" class="btn small">Clear list</button>
+        </div>
+      </aside>
+
+      <section class="detail">
+        <div class="hero panel">
+          <div class="preview"><img id="preview" alt="" /><video id="vpreview" class="hidden" controls muted playsinline></video><div id="no-preview" class="muted hidden">No preview</div></div>
+          <div class="hero-info">
+            <h2 id="d-name"></h2>
+            <p id="d-sub" class="muted mono small"></p>
+            <div id="verdict" class="verdict"></div>
+            <div id="chips" class="chips"></div>
+            <div class="actions">
+              <button id="dl-clean" class="btn primary">Download clean copy</button>
+              <button id="dl-reencode" class="btn">Re-encode copy</button>
+              <button id="dl-report" class="btn">Export report (JSON)</button>
+            </div>
+            <p id="strip-note" class="muted small"></p>
+          </div>
+        </div>
+
+        <div id="stranger" class="panel card stranger"></div>
+
+        <div id="compare" class="panel card compare hidden"></div>
+
+        <div id="notes"></div>
+
+        <div id="gps-card" class="panel card hidden">
+          <h3 id="gps-title">📍 This photo reveals where it was taken</h3>
+          <div class="gps-grid">
+            <div class="coords mono" id="gps-coords"></div>
+            <div class="mini-map" id="mini-map" aria-hidden="true"></div>
+          </div>
+          <p class="muted small">Opening a map sends these coordinates to that map site. That's your choice; this page never does it.</p>
+          <div class="actions">
+            <a id="gps-osm" class="btn small" target="_blank" rel="noopener noreferrer">Open in OpenStreetMap ↗</a>
+            <a id="gps-gmaps" class="btn small" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a>
+            <button id="gps-copy" class="btn small">Copy coordinates</button>
+          </div>
+        </div>
+
+        <div id="thumb-card" class="panel card hidden">
+          <h3>🖼️ Hidden thumbnail</h3>
+          <p class="muted small" id="thumb-note">Cameras embed a small preview inside the file. Editors often don't update it, so it can show the photo <em>before</em> cropping or blurring.</p>
+          <img id="thumb" alt="Embedded thumbnail" />
+        </div>
+
+        <div id="groups"></div>
+
+        <details id="xmp-raw-wrap" class="panel card hidden">
+          <summary>Raw XMP packet</summary>
+          <pre id="xmp-raw" class="mono"></pre>
+        </details>
+
+        <details class="panel card">
+          <summary>File structure</summary>
+          <div id="structure" class="mono small"></div>
+        </details>
+      </section>
+    </section>
+
+    <section class="explain">
+      <h2>What is photo metadata?</h2>
+      <div class="explain-grid">
+        <div><h3>📍 Location</h3><p class="muted">Phones write GPS coordinates into every photo by default. Posting the original file can reveal your home.</p></div>
+        <div><h3>🪪 Identity</h3><p class="muted">Serial numbers and unique IDs can link photos taken by the same device, even across accounts.</p></div>
+        <div><h3>🕒 Time</h3><p class="muted">Capture times down to the sub-second, often with your time zone offset.</p></div>
+        <div><h3>👻 Hidden data</h3><p class="muted">Thumbnails, depth maps and bytes after the image end can hold content you thought you removed.</p></div>
+        <div><h3>🎬 Videos</h3><p class="muted">Phone videos store GPS, the phone model and the exact recording time, just like photos.</p></div>
+        <div><h3>📄 Documents</h3><p class="muted">Word, Excel, PowerPoint and PDF files carry author names, your company, comment authors, editing time and even photos with GPS.</p></div>
+      </div>
+      <p class="muted small">Cleaning is lossless: metadata is cut out or blanked in place, and pictures, video and document content are never re-compressed. Many social sites strip metadata on upload, but email, cloud links, messaging "send as file" and forums often don't.</p>
+    </section>
+  </main>
+
+  <div class="toast-wrap" id="toasts"></div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

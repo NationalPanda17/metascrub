@@ -1,0 +1,10 @@
+{
+  "name": "metascrub",
+  "private": true,
+  "type": "module",
+  "description": "See and remove hidden metadata from photos, videos and documents, 100% in the browser.",
+  "scripts": {
+    "serve": "python3 -m http.server 8000",
+    "test": "node tests/metadata.test.mjs"
+  }
+}
